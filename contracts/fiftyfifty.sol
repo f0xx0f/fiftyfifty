@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.4.25;
 
 contract Game  {
     address[] gamers;
@@ -7,13 +7,13 @@ contract Game  {
     address winner;
 
     function sendPrize(address _gamer) private {
-        _gamer.transfer(this.balance);
-        Transfer(this, _gamer, this.balance);
+        _gamer.transfer(address(this).balance);
+        emit Transfer(this, _gamer, address(this).balance);
     } 
     
-    function getWinner() public view returns (address winner) {
+    function getWinner() public view returns (address) {
         require(!active);
-        if (uint8(block.blockhash(gameBlock+1))%2 == 1) {
+        if (uint8(blockhash(gameBlock+1))%2 == 1) {
             return gamers[1];
         }
         else {
@@ -22,7 +22,7 @@ contract Game  {
     }
 
     function addDeposit() public payable {
-        Transfer(msg.sender, this, msg.value);
+        emit Transfer(msg.sender, this, msg.value);
         require(msg.value == 1 ether);
         require(active);
         gamers.push(msg.sender);
